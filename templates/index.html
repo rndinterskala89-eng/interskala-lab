@@ -10,6 +10,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
+        /* ============================================================
+           CSS LENGKAP
+           ============================================================ */
         :root {
             --primary: #0d47a1;
             --primary-light: #1565c0;
@@ -1544,7 +1547,6 @@
         // ============================================================
         // KONFIGURASI
         // ============================================================
-        const STORAGE_KEY = 'mhb832sd_config';
         const USER_STORAGE_KEY = 'mhb832sd_users';
         const SCHEDULE_STORAGE_KEY = 'mhb832sd_schedules';
         const HISTORY_STORAGE_KEY = 'mhb832sd_history';
@@ -1553,12 +1555,114 @@
         const PROFILE_STORAGE_KEY = 'mhb832sd_profile';
         const LOGO_STORAGE_KEY = 'mhb832sd_logo';
 
-        const THINGSPEAK_CONFIG = loadThingspeakConfig();
+        let THINGSPEAK_CONFIG = { 
+            channelId: '', 
+            readApiKey: '', 
+            fieldSuhu: 'field1', 
+            fieldKelembaban: 'field2', 
+            fieldTekanan: 'field3' 
+        };
+
         const ADMIN_PASSWORD = 'admin123';
         let saveIntervalTimer = null;
         let isSavingInProgress = false;
         let currentHistoryTab = 'sensor';
 
+        // ============================================================
+        // THINGSPEAK CONFIG - VIA SERVER API
+        // ============================================================
+        async function loadThingspeakConfig() {
+            try {
+                const response = await fetch('/api/thingspeak/config');
+                const config = await response.json();
+                console.log('📡 Loaded ThingSpeak config from server:', config);
+                return config;
+            } catch (e) {
+                console.warn('⚠️ Failed to load config from server', e);
+                return {
+                    channelId: '',
+                    readApiKey: '',
+                    fieldSuhu: 'field1',
+                    fieldKelembaban: 'field2',
+                    fieldTekanan: 'field3'
+                };
+            }
+        }
+
+        async function initThingspeakConfig() {
+            THINGSPEAK_CONFIG = await loadThingspeakConfig();
+            console.log('📡 ThingSpeak config initialized:', THINGSPEAK_CONFIG);
+        }
+
+        async function saveThingspeakConfig() {
+            const channelIdEl = document.getElementById('thingspeakChannelId');
+            const apiKeyEl = document.getElementById('thingspeakApiKey');
+            const fieldSuhuEl = document.getElementById('thingspeakFieldSuhu');
+            const fieldKelembabanEl = document.getElementById('thingspeakFieldKelembaban');
+            const fieldTekananEl = document.getElementById('thingspeakFieldTekanan');
+
+            if (!channelIdEl || !apiKeyEl) {
+                showToast('⚠️ Form tidak ditemukan!', 'error');
+                return;
+            }
+
+            const channelId = channelIdEl.value.trim();
+            const apiKey = apiKeyEl.value.trim();
+            const fieldSuhu = fieldSuhuEl ? fieldSuhuEl.value.trim() || 'field1' : 'field1';
+            const fieldKelembaban = fieldKelembabanEl ? fieldKelembabanEl.value.trim() || 'field2' : 'field2';
+            const fieldTekanan = fieldTekananEl ? fieldTekananEl.value.trim() || 'field3' : 'field3';
+
+            if (!channelId || !apiKey) {
+                showToast('⚠️ Channel ID dan API Key harus diisi!', 'warning');
+                return;
+            }
+
+            const config = { 
+                channelId: channelId, 
+                readApiKey: apiKey, 
+                fieldSuhu: fieldSuhu, 
+                fieldKelembaban: fieldKelembaban, 
+                fieldTekanan: fieldTekanan 
+            };
+            
+            try {
+                const response = await fetch('/api/thingspeak/config', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(config)
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    showToast('✅ Konfigurasi ThingSpeak disimpan permanen!', 'success');
+                    Object.assign(THINGSPEAK_CONFIG, config);
+                    fetchThingspeakData().then(data => {
+                        if (data.source === 'thingspeak') {
+                            Store.thingspeakStatus = 'connected';
+                            showToast('✅ Berhasil terhubung ke ThingSpeak!', 'success');
+                        } else {
+                            Store.thingspeakStatus = 'error';
+                            showToast('⚠️ Gagal terhubung ke ThingSpeak. Periksa Channel ID dan API Key.', 'warning');
+                        }
+                        updateThingspeakStatus();
+                        if (document.querySelector('.settings-grid')) {
+                            renderSetting();
+                        }
+                    });
+                } else {
+                    showToast('❌ Gagal menyimpan konfigurasi: ' + (result.message || ''), 'error');
+                }
+            } catch (e) {
+                console.warn('⚠️ Failed to save config to server', e);
+                showToast('❌ Gagal menyimpan konfigurasi!', 'error');
+            }
+        }
+
+        // ============================================================
+        // DATA STORE
+        // ============================================================
         const Store = {
             users: [],
             schedules: [],
@@ -1587,30 +1691,6 @@
         // ============================================================
         // FUNGSI LOAD/SAVE
         // ============================================================
-        function loadThingspeakConfig() {
-            try {
-                const saved = localStorage.getItem(STORAGE_KEY);
-                if (saved) return JSON.parse(saved);
-            } catch (e) {}
-            return { channelId: '', readApiKey: '', fieldSuhu: 'field1', fieldKelembaban: 'field2', fieldTekanan: 'field3' };
-        }
-
-        function saveThingspeakConfig() {
-            const channelId = document.getElementById('thingspeakChannelId').value.trim();
-            const apiKey = document.getElementById('thingspeakApiKey').value.trim();
-            const fieldSuhu = document.getElementById('thingspeakFieldSuhu').value.trim() || 'field1';
-            const fieldKelembaban = document.getElementById('thingspeakFieldKelembaban').value.trim() || 'field2';
-            const fieldTekanan = document.getElementById('thingspeakFieldTekanan').value.trim() || 'field3';
-            const config = { channelId, readApiKey: apiKey, fieldSuhu, fieldKelembaban, fieldTekanan };
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-            Object.assign(THINGSPEAK_CONFIG, config);
-            showToast('✅ Konfigurasi ThingSpeak disimpan!', 'success');
-            fetchThingspeakData().then(() => {
-                updateThingspeakStatus();
-                if (document.querySelector('.settings-grid')) renderSetting();
-            });
-        }
-
         function loadLogo() {
             try {
                 const saved = localStorage.getItem(LOGO_STORAGE_KEY);
@@ -2253,19 +2333,16 @@
                 reader.onload = function(event) {
                     data.document = event.target.result;
                     data.documentName = file.name;
-                    // Lanjutkan ke proses foto dan save
                     processFotoAndSave(data, id);
                 };
                 reader.readAsDataURL(file);
                 return;
             }
 
-            // Proses foto dan save
             processFotoAndSave(data, id);
         }
 
         function processFotoAndSave(data, id) {
-            // Proses upload foto (Teknisi/Admin)
             const fotoInput = document.getElementById('m_foto');
             if (fotoInput && fotoInput.files && fotoInput.files.length > 0) {
                 const file = fotoInput.files[0];
@@ -2295,7 +2372,6 @@
             const userRole = Store.currentUser?.role || '';
             const isSales = userRole === 'Sales';
 
-            // Sales: wajib upload document untuk schedule baru
             if (isSales && !id && !data.document) {
                 showToast('⚠️ Sales wajib upload Document PO/SO!', 'warning');
                 return;
@@ -2311,9 +2387,7 @@
                 if (id) {
                     oldSchedule = Store.schedules.find(s => s.id === id);
                     
-                    // Jika Sales dan ada document yang diupload
                     if (isSales && data.document) {
-                        // Sales hanya update document saja
                         const updateData = {
                             document: data.document,
                             documentName: data.documentName,
@@ -2321,7 +2395,6 @@
                         };
                         result = await API.put('/api/schedules/' + id, updateData);
                     } else if (isSales) {
-                        // Sales tidak bisa update field lain
                         showToast('⚠️ Sales hanya bisa upload document!', 'warning');
                         isSavingSchedule = false;
                         return;
@@ -2329,8 +2402,6 @@
                         result = await API.put('/api/schedules/' + id, data);
                     }
                 } else {
-                    // Buat schedule baru
-                    // Jika Sales, status langsung On Progress
                     if (isSales) {
                         scheduleData.status = 'On Progress';
                     }
@@ -2340,7 +2411,6 @@
                 if (result.success) {
                     const schedule = result.schedule;
                     
-                    // Document upload - Sales
                     if (data.document && data.documentName) {
                         await addScheduleHistory('document', {
                             customer: data.customer || schedule.customer,
@@ -2352,7 +2422,6 @@
                         showToast(`✅ Document ${data.documentName} berhasil diupload!`, 'success');
                     }
                     
-                    // Foto upload - Teknisi
                     if (data.foto && data.fotoName) {
                         await addScheduleHistory('foto', {
                             customer: data.customer || schedule.customer,
@@ -2364,7 +2433,6 @@
                         showToast(`✅ Foto ${data.fotoName} berhasil diupload!`, 'success');
                     }
                     
-                    // Status change
                     if (oldSchedule && oldSchedule.status !== data.status) {
                         await addScheduleHistory('status', {
                             customer: data.customer || oldSchedule.customer,
@@ -2377,7 +2445,6 @@
                         showToast(`✅ Status berubah menjadi ${data.status}`, 'success');
                     }
 
-                    // Jika status Done dan ada foto, tambahkan ke history sensor
                     if (data.status === 'Done' && data.foto) {
                         const sensorEntry = {
                             id: Date.now() + 1,
@@ -2415,7 +2482,7 @@
         }
 
         // ============================================================
-        // OPEN SCHEDULE FORM - FIXED UNTUK SALES
+        // OPEN SCHEDULE FORM
         // ============================================================
         function openScheduleForm(data = null) {
             const isEdit = !!data;
@@ -2457,7 +2524,6 @@
                         </div>
                 `;
 
-                // Field Teknisi/Admin
                 if (isTeknisi || isAdmin) {
                     formFields += `
                         <div class="form-group">
@@ -2490,7 +2556,6 @@
                     `;
                 }
 
-                // Upload Document - Sales atau Admin
                 if (isSales || isAdmin) {
                     formFields += `
                         <div class="form-group" style="grid-column:1/-1;">
@@ -2506,7 +2571,6 @@
                     `;
                 }
 
-                // Upload Foto - Teknisi atau Admin
                 if (isTeknisi || isAdmin) {
                     formFields += `
                         <div class="form-group" style="grid-column:1/-1;">
@@ -2521,7 +2585,6 @@
                     `;
                 }
 
-                // Status - Teknisi atau Admin
                 if (isTeknisi || isAdmin) {
                     formFields += `
                         <div class="form-group">
@@ -2547,7 +2610,6 @@
                 formFields += `</div>`;
                 document.getElementById('modalBody').innerHTML = formFields;
 
-                // Event listener untuk document upload
                 const docInput = document.getElementById('m_document');
                 if (docInput) {
                     docInput.addEventListener('change', function(e) {
@@ -2559,7 +2621,6 @@
                     });
                 }
 
-                // Event listener untuk foto upload
                 const fotoInput = document.getElementById('m_foto');
                 if (fotoInput) {
                     fotoInput.addEventListener('change', function(e) {
@@ -2576,7 +2637,6 @@
                     document.getElementById('modalSubmitBtn').textContent = 'Update';
                 }
 
-                // Auto set status ke On Progress jika Sales
                 if (isSales && !isEdit) {
                     setTimeout(() => {
                         const statusHidden = document.getElementById('m_status');
@@ -4408,6 +4468,11 @@
         // EVENT LISTENERS
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
+            // Load ThingSpeak config dari server
+            initThingspeakConfig().then(() => {
+                console.log('✅ ThingSpeak config initialized');
+            });
+            
             seedDefaultData();
             document.querySelectorAll('.menu-item[data-page]').forEach(item => {
                 item.addEventListener('click', function() { navigateTo(this.dataset.page); });
@@ -4504,6 +4569,8 @@
         window.getFilteredSensorData = getFilteredSensorData;
         window.getFilteredScheduleHistory = getFilteredScheduleHistory;
         window.handleScheduleSubmit = handleScheduleSubmit;
+        window.initThingspeakConfig = initThingspeakConfig;
+        window.loadThingspeakConfig = loadThingspeakConfig;
     </script>
 </body>
 </html>
