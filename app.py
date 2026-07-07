@@ -35,7 +35,7 @@ UPLOAD_FOLDER = Path('uploads')
 UPLOAD_FOLDER.mkdir(exist_ok=True)
 
 # ============================================================
-# LOAD KONFIGURASI
+# LOAD KONFIGURASI DARI ENVIRONMENT / CONFIG.PY
 # ============================================================
 
 try:
@@ -67,6 +67,46 @@ except ImportError:
     SAVE_INTERVAL_MINUTES = int(os.environ.get('SAVE_INTERVAL_MINUTES', 5))
     DEFAULT_USERNAME = os.environ.get('DEFAULT_USERNAME', 'admin')
     DEFAULT_PASSWORD = os.environ.get('DEFAULT_PASSWORD', 'admin123')
+
+# ============================================================
+# THINGSPEAK CONFIG PERMANEN (Server-side)
+# ============================================================
+
+THINGSPEAK_CONFIG_FILE = 'thingspeak_config.json'
+
+def load_thingspeak_config():
+    """Load ThingSpeak config dari file JSON"""
+    try:
+        with open(THINGSPEAK_CONFIG_FILE, 'r') as f:
+            config = json.load(f)
+            print(f"📡 Loaded ThingSpeak config from file: {config.get('channelId', 'empty')}")
+            return config
+    except FileNotFoundError:
+        print("📡 ThingSpeak config file not found, creating default")
+        default_config = {
+            "channelId": "",
+            "readApiKey": "",
+            "fieldSuhu": "field1",
+            "fieldKelembaban": "field2",
+            "fieldTekanan": "field3"
+        }
+        save_thingspeak_config(default_config)
+        return default_config
+
+def save_thingspeak_config(config):
+    """Save ThingSpeak config ke file JSON"""
+    with open(THINGSPEAK_CONFIG_FILE, 'w') as f:
+        json.dump(config, f, indent=2)
+    print(f"💾 ThingSpeak config saved to file: {config.get('channelId', 'empty')}")
+
+# Load config dari file
+THINGSPEAK_CONFIG = load_thingspeak_config()
+
+# Update API_KEY dan CHANNEL_ID dari config jika ada
+if THINGSPEAK_CONFIG.get('channelId') and THINGSPEAK_CONFIG.get('readApiKey'):
+    THINGSPEAK_CHANNEL_ID = THINGSPEAK_CONFIG.get('channelId')
+    THINGSPEAK_API_KEY = THINGSPEAK_CONFIG.get('readApiKey')
+    print(f"📡 ThingSpeak configured: Channel {THINGSPEAK_CHANNEL_ID}")
 
 # ============================================================
 # INISIALISASI FLASK
@@ -193,7 +233,23 @@ def format_datetime(dt):
 
 def fetch_thingspeak_data():
     """Mengambil data dari ThingSpeak"""
-    global last_data_cache
+    global last_data_cache, THINGSPEAK_CHANNEL_ID, THINGSPEAK_API_KEY
+    
+    # Cek apakah config sudah diisi
+    if not THINGSPEAK_CHANNEL_ID or THINGSPEAK_CHANNEL_ID == 'YOUR_CHANNEL_ID':
+        print("⚠️ ThingSpeak not configured - using simulation data")
+        return {
+            "success": True,
+            "data": {
+                "suhu": 24.6 + (time.time() % 2 - 1) * 2,
+                "kelembaban": 42.3 + (time.time() % 3 - 1) * 3,
+                "tekanan": 1010.6 + (time.time() % 2 - 1) * 1.5,
+                "waktu": datetime.now().isoformat(),
+                "entry_id": "0"
+            },
+            "last_update": datetime.now().isoformat(),
+            "source": "simulasi"
+        }
     
     try:
         url = f'https://api.thingspeak.com/channels/{THINGSPEAK_CHANNEL_ID}/feeds/last.json?api_key={THINGSPEAK_API_KEY}'
@@ -227,7 +283,8 @@ def fetch_thingspeak_data():
                         "waktu": latest.get('created_at', datetime.now().isoformat()),
                         "entry_id": latest.get('entry_id', '0')
                     },
-                    "last_update": datetime.now().isoformat()
+                    "last_update": datetime.now().isoformat(),
+                    "source": "thingspeak"
                 }
                 
                 last_data_cache = result
@@ -246,16 +303,18 @@ def fetch_thingspeak_data():
         print("📡 Returning cached data")
         return last_data_cache
     
+    # Fallback ke simulasi
     return {
         "success": True,
         "data": {
-            "suhu": 24.6,
-            "kelembaban": 42.3,
-            "tekanan": 1010.6,
+            "suhu": 24.6 + (time.time() % 2 - 1) * 2,
+            "kelembaban": 42.3 + (time.time() % 3 - 1) * 3,
+            "tekanan": 1010.6 + (time.time() % 2 - 1) * 1.5,
             "waktu": datetime.now().isoformat(),
             "entry_id": "0"
         },
-        "last_update": datetime.now().isoformat()
+        "last_update": datetime.now().isoformat(),
+        "source": "simulasi"
     }
 
 def save_to_history(data):
@@ -897,6 +956,46 @@ def update_profile():
         return jsonify({"success": False, "message": str(e)}), 500
 
 # ============================================================
+# API ROUTES - THINGSPEAK CONFIG
+# ============================================================
+
+@app.route('/api/thingspeak/config', methods=['GET', 'POST'])
+def thingspeak_config_api():
+    """API untuk mendapatkan dan menyimpan konfigurasi ThingSpeak"""
+    global THINGSPEAK_CONFIG, THINGSPEAK_CHANNEL_ID, THINGSPEAK_API_KEY
+    
+    if request.method == 'POST':
+        try:
+            config = request.get_json()
+            if config is None:
+                return jsonify({"success": False, "message": "Data tidak valid"}), 400
+            
+            channel_id = config.get('channelId', '').strip()
+            api_key = config.get('readApiKey', '').strip()
+            
+            if not channel_id or not api_key:
+                return jsonify({"success": False, "message": "Channel ID dan API Key harus diisi"}), 400
+            
+            # Simpan config
+            save_thingspeak_config(config)
+            THINGSPEAK_CONFIG = config
+            
+            # Update global variables
+            THINGSPEAK_CHANNEL_ID = channel_id
+            THINGSPEAK_API_KEY = api_key
+            
+            return jsonify({
+                "success": True, 
+                "message": "Konfigurasi ThingSpeak berhasil disimpan permanen!",
+                "config": config
+            })
+        except Exception as e:
+            return jsonify({"success": False, "message": str(e)}), 500
+    else:
+        # GET - return config
+        return jsonify(THINGSPEAK_CONFIG)
+
+# ============================================================
 # HEALTH CHECK & STATUS ENDPOINTS
 # ============================================================
 
@@ -930,6 +1029,62 @@ def api_status():
 def ping():
     """Simple ping endpoint"""
     return jsonify({"pong": True, "timestamp": datetime.now().isoformat()})
+
+# ============================================================
+# THINGSPEAK CONFIG - SERVER SIDE
+# ============================================================
+
+THINGSPEAK_CONFIG_FILE = 'thingspeak_config.json'
+
+def load_thingspeak_config():
+    try:
+        with open(THINGSPEAK_CONFIG_FILE, 'r') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        default_config = {
+            "channelId": "",
+            "readApiKey": "",
+            "fieldSuhu": "field1",
+            "fieldKelembaban": "field2",
+            "fieldTekanan": "field3"
+        }
+        save_thingspeak_config(default_config)
+        return default_config
+
+def save_thingspeak_config(config):
+    with open(THINGSPEAK_CONFIG_FILE, 'w') as f:
+        json.dump(config, f, indent=2)
+
+@app.route('/api/thingspeak/config', methods=['GET', 'POST'])
+def thingspeak_config_api():
+    global THINGSPEAK_CONFIG, THINGSPEAK_CHANNEL_ID, THINGSPEAK_API_KEY
+    
+    if request.method == 'POST':
+        try:
+            config = request.get_json()
+            if config is None:
+                return jsonify({"success": False, "message": "Data tidak valid"}), 400
+            
+            channel_id = config.get('channelId', '').strip()
+            api_key = config.get('readApiKey', '').strip()
+            
+            if not channel_id or not api_key:
+                return jsonify({"success": False, "message": "Channel ID dan API Key harus diisi"}), 400
+            
+            save_thingspeak_config(config)
+            THINGSPEAK_CONFIG = config
+            THINGSPEAK_CHANNEL_ID = channel_id
+            THINGSPEAK_API_KEY = api_key
+            
+            return jsonify({
+                "success": True,
+                "message": "Konfigurasi ThingSpeak berhasil disimpan permanen!",
+                "config": config
+            })
+        except Exception as e:
+            return jsonify({"success": False, "message": str(e)}), 500
+    else:
+        return jsonify(THINGSPEAK_CONFIG)
 
 # ============================================================
 # RUN APPLICATION
