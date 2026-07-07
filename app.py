@@ -955,45 +955,6 @@ def update_profile():
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
 
-# ============================================================
-# API ROUTES - THINGSPEAK CONFIG
-# ============================================================
-
-@app.route('/api/thingspeak/config', methods=['GET', 'POST'])
-def thingspeak_config_api():
-    """API untuk mendapatkan dan menyimpan konfigurasi ThingSpeak"""
-    global THINGSPEAK_CONFIG, THINGSPEAK_CHANNEL_ID, THINGSPEAK_API_KEY
-    
-    if request.method == 'POST':
-        try:
-            config = request.get_json()
-            if config is None:
-                return jsonify({"success": False, "message": "Data tidak valid"}), 400
-            
-            channel_id = config.get('channelId', '').strip()
-            api_key = config.get('readApiKey', '').strip()
-            
-            if not channel_id or not api_key:
-                return jsonify({"success": False, "message": "Channel ID dan API Key harus diisi"}), 400
-            
-            # Simpan config
-            save_thingspeak_config(config)
-            THINGSPEAK_CONFIG = config
-            
-            # Update global variables
-            THINGSPEAK_CHANNEL_ID = channel_id
-            THINGSPEAK_API_KEY = api_key
-            
-            return jsonify({
-                "success": True, 
-                "message": "Konfigurasi ThingSpeak berhasil disimpan permanen!",
-                "config": config
-            })
-        except Exception as e:
-            return jsonify({"success": False, "message": str(e)}), 500
-    else:
-        # GET - return config
-        return jsonify(THINGSPEAK_CONFIG)
 
 # ============================================================
 # HEALTH CHECK & STATUS ENDPOINTS
