@@ -10,9 +10,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        /* ============================================================
-           CSS LENGKAP
-           ============================================================ */
         :root {
             --primary: #0d47a1;
             --primary-light: #1565c0;
@@ -2138,12 +2135,13 @@
         }
 
         // ============================================================
-        // OPEN USER FORM
+        // OPEN USER FORM - FIXED
         // ============================================================
         function openUserForm(data = null) {
             const isEdit = !!data;
             const user = data || {};
             let currentAccess = user.access || {};
+            
             if (Object.keys(currentAccess).length === 0) {
                 const defaultAccess = {
                     'Admin': { dashboard: true, setting: true, history: true, usermanagement: true, schedule: true, profile: true, map: true },
@@ -2153,7 +2151,9 @@
                 };
                 currentAccess = defaultAccess[user.role] || defaultAccess['Viewer'];
             }
+            
             openModal(isEdit ? 'Edit User' : 'Tambah User', 'user', data);
+            
             document.getElementById('modalBody').innerHTML = `
                 <div class="form-group">
                     <label><i class="fas fa-user"></i> Nama User</label>
@@ -2192,12 +2192,16 @@
                     </small>
                 </div>
             `;
+            
             if (isEdit) {
                 document.getElementById('modalId').value = user.id;
                 document.getElementById('modalSubmitBtn').textContent = 'Update';
             }
         }
 
+        // ============================================================
+        // UPDATE ACCESS BY ROLE - FIXED (DIPINDAHKAN KE LUAR)
+        // ============================================================
         function updateAccessByRole(role) {
             const defaultAccess = {
                 'Admin': { dashboard: true, setting: true, history: true, usermanagement: true, schedule: true, profile: true, map: true },
@@ -2212,7 +2216,7 @@
         }
 
         // ============================================================
-        // SAVE MODAL DATA
+        // SAVE MODAL DATA - FIXED
         // ============================================================
         async function saveModalData(e) {
             e.preventDefault();
@@ -2224,11 +2228,17 @@
                 const email = document.getElementById('m_email').value.trim();
                 const role = document.getElementById('m_role').value;
                 const password = document.getElementById('m_password').value.trim() || 'default123';
+                
                 if (!name) { showToast('Nama harus diisi!', 'warning'); return; }
+                
                 const access = {};
-                document.querySelectorAll('.m-access-check').forEach(cb => { access[cb.dataset.access] = cb.checked; });
+                document.querySelectorAll('.m-access-check').forEach(cb => {
+                    access[cb.dataset.access] = cb.checked;
+                });
                 access.dashboard = true;
+                
                 const data = { name, email, role, password, access };
+                
                 if (id) {
                     const result = await API.put('/api/users/' + id, data);
                     if (result.success) {
@@ -2296,7 +2306,6 @@
             const isTeknisi = userRole === 'Teknisi';
             const isAdmin = userRole === 'Admin';
 
-            // Ambil data dari form
             const data = {
                 tglPengajuan: document.getElementById('m_tglPengajuan').value,
                 tglPelaksana: document.getElementById('m_tglPelaksana').value,
@@ -2310,13 +2319,11 @@
                 status: document.getElementById('m_status')?.value || 'On Progress'
             };
 
-            // Validasi
             if (!data.customer || !data.namaTeknis || !data.lokasiCustomer) {
                 showToast('Customer, Teknis, dan Lokasi harus diisi!', 'warning');
                 return;
             }
 
-            // Sales: wajib upload document untuk schedule baru
             if (isSales && !id) {
                 const docInput = document.getElementById('m_document');
                 if (!docInput || !docInput.files || docInput.files.length === 0) {
@@ -2325,7 +2332,6 @@
                 }
             }
 
-            // Proses upload document (Sales/Admin)
             const docInput = document.getElementById('m_document');
             if (docInput && docInput.files && docInput.files.length > 0) {
                 const file = docInput.files[0];
@@ -4468,7 +4474,6 @@
         // EVENT LISTENERS
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
-            // Load ThingSpeak config dari server
             initThingspeakConfig().then(() => {
                 console.log('✅ ThingSpeak config initialized');
             });
