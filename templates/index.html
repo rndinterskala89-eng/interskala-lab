@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>MHB-832SD Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -52,6 +52,7 @@
             height: 100vh;
             overflow: hidden;
             -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
         ::-webkit-scrollbar { width:6px; height:6px; }
         ::-webkit-scrollbar-track { background:var(--gray-100); border-radius:10px; }
@@ -61,8 +62,8 @@
         .sidebar-toggle {
             display: none;
             position: fixed;
-            top: 15px;
-            left: 15px;
+            top: 12px;
+            left: 12px;
             z-index: 1000;
             background: var(--primary-gradient);
             color: white;
@@ -74,8 +75,9 @@
             cursor: pointer;
             box-shadow: var(--shadow-lg);
             transition: var(--transition);
+            touch-action: manipulation;
         }
-        .sidebar-toggle:hover { transform: scale(1.05); }
+        .sidebar-toggle:active { transform: scale(0.92); }
         .sidebar-overlay {
             display: none;
             position: fixed;
@@ -89,7 +91,7 @@
         .full-page-mode .app-container { display: block !important; }
         .full-page-mode .sidebar { display: none !important; }
         .full-page-mode .main-content {
-            padding: 24px 30px 30px 30px !important;
+            padding: 16px !important;
             margin-left: 0 !important;
             width: 100% !important;
             max-width: 100% !important;
@@ -97,10 +99,17 @@
         .full-page-mode .sidebar-toggle { display: none !important; }
 
         /* ============================================================
-           RESPONSIF HP - DIPERBAIKI
+           RESPONSIF - DIPERBAIKI UNTUK HP & LAPTOP
            ============================================================ */
         @media (max-width:768px) {
-            .sidebar-toggle { display: block; }
+            .sidebar-toggle { 
+                display: block; 
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+                top: 10px;
+                left: 10px;
+            }
             .sidebar {
                 position: fixed;
                 top: 0; left: 0;
@@ -117,7 +126,7 @@
             
             .main-content {
                 padding: 8px !important;
-                padding-top: 55px !important;
+                padding-top: 60px !important;
                 overflow-x: hidden !important;
                 width: 100% !important;
                 max-width: 100% !important;
@@ -130,12 +139,16 @@
                 margin-bottom: 8px !important;
             }
             .page-header h1 {
-                font-size: 16px !important;
+                font-size: 18px !important;
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 4px;
             }
             .page-header h1 small {
-                font-size: 11px !important;
-                display: block !important;
-                margin-left: 0 !important;
+                font-size: 12px !important;
+                display: inline !important;
+                margin-left: 4px !important;
             }
             .header-right {
                 width: 100% !important;
@@ -143,8 +156,8 @@
                 gap: 4px !important;
             }
             .header-time, .user-login-info {
-                font-size: 9px !important;
-                padding: 3px 8px !important;
+                font-size: 10px !important;
+                padding: 4px 10px !important;
             }
             
             .dashboard-grid {
@@ -152,7 +165,7 @@
                 gap: 6px !important;
             }
             .stat-card {
-                padding: 8px 10px !important;
+                padding: 10px 12px !important;
                 border-left-width: 3px !important;
             }
             .stat-card::after {
@@ -160,10 +173,10 @@
                 height: 30px;
             }
             .stat-card .value {
-                font-size: 16px !important;
+                font-size: 18px !important;
             }
             .stat-card .label {
-                font-size: 8px !important;
+                font-size: 9px !important;
             }
             .stat-card .sub {
                 font-size: 8px !important;
@@ -177,46 +190,46 @@
                 padding: 10px !important;
             }
             .chart-container canvas {
-                max-height: 120px !important;
+                max-height: 150px !important;
             }
             
             .info-side {
                 gap: 8px !important;
             }
             .schedule-card {
-                max-height: 180px !important;
+                max-height: 200px !important;
                 padding: 10px !important;
             }
             .schedule-card h3 {
-                font-size: 11px !important;
+                font-size: 12px !important;
             }
             .schedule-item {
-                padding: 4px 8px !important;
+                padding: 6px 10px !important;
                 gap: 6px !important;
             }
             .schedule-item .time {
-                font-size: 8px !important;
-                min-width: 30px !important;
+                font-size: 9px !important;
+                min-width: 35px !important;
             }
             .schedule-item .info .customer {
-                font-size: 10px !important;
+                font-size: 11px !important;
             }
             .schedule-item .info .teknis {
-                font-size: 8px !important;
+                font-size: 9px !important;
             }
             .schedule-item .status {
-                font-size: 8px !important;
-                padding: 1px 6px !important;
+                font-size: 9px !important;
+                padding: 2px 8px !important;
             }
             
             .map-card {
                 padding: 10px !important;
             }
             .map-card .map-small {
-                height: 100px !important;
+                height: 120px !important;
             }
             .map-card .map-info {
-                font-size: 8px !important;
+                font-size: 9px !important;
                 padding: 4px 8px !important;
                 gap: 2px 8px !important;
             }
@@ -229,15 +242,15 @@
             }
             .company-profile-top .company-logo,
             .company-profile-top .company-logo-placeholder {
-                width: 32px !important;
-                height: 32px !important;
-                font-size: 12px !important;
+                width: 36px !important;
+                height: 36px !important;
+                font-size: 14px !important;
             }
             .company-profile-top .company-name {
-                font-size: 12px !important;
+                font-size: 13px !important;
             }
             .company-profile-top .company-detail {
-                font-size: 9px !important;
+                font-size: 10px !important;
                 flex-direction: column !important;
                 gap: 2px !important;
             }
@@ -251,42 +264,36 @@
                 margin-bottom: 8px !important;
             }
             .status-batas .batas-item {
-                font-size: 10px !important;
+                font-size: 11px !important;
                 gap: 2px !important;
             }
             .status-batas .batas-item span[style*="font-size:10px"] {
-                font-size: 8px !important;
+                font-size: 9px !important;
             }
             .status-batas .batas-status {
                 margin-left: 0 !important;
-                font-size: 11px !important;
-                padding: 2px 10px !important;
+                font-size: 12px !important;
+                padding: 3px 12px !important;
             }
             
             .foto-section {
                 padding: 8px 10px !important;
             }
             .foto-section .foto-header {
-                font-size: 11px !important;
+                font-size: 12px !important;
             }
             .foto-grid {
                 grid-template-columns: 1fr 1fr !important;
-                gap: 4px !important;
+                gap: 6px !important;
             }
             .foto-item .foto-thumb {
-                height: 60px !important;
+                height: 70px !important;
             }
             .foto-item .foto-info .foto-customer {
-                font-size: 10px !important;
+                font-size: 11px !important;
             }
             .foto-item .foto-info .foto-teknis {
-                font-size: 8px !important;
-            }
-            .foto-empty i {
-                font-size: 20px !important;
-            }
-            .foto-empty p {
-                font-size: 10px !important;
+                font-size: 9px !important;
             }
             
             .save-status {
@@ -296,18 +303,14 @@
                 gap: 4px !important;
             }
             .save-status .left {
-                font-size: 9px !important;
+                font-size: 10px !important;
                 gap: 4px !important;
                 flex-wrap: wrap !important;
             }
-            .save-status .left i {
-                font-size: 12px !important;
-            }
             .save-status .right {
-                font-size: 9px !important;
+                font-size: 10px !important;
             }
             
-            /* Table responsive */
             .table-container {
                 padding: 8px !important;
                 overflow-x: auto !important;
@@ -317,44 +320,44 @@
             }
             table {
                 font-size: 10px !important;
-                min-width: 600px !important;
+                min-width: 650px !important;
             }
             table th, table td {
-                padding: 4px 6px !important;
-                font-size: 9px !important;
+                padding: 5px 8px !important;
+                font-size: 10px !important;
             }
             .table-scroll {
-                max-height: 250px !important;
+                max-height: 300px !important;
                 overflow-x: auto !important;
             }
             
-            /* Modal */
             .modal-overlay .modal-content {
-                padding: 12px !important;
+                padding: 14px !important;
                 margin: 8px !important;
                 max-width: 100% !important;
                 max-height: 95vh !important;
             }
             .modal-overlay .modal-content .modal-header h3 {
-                font-size: 14px !important;
+                font-size: 15px !important;
             }
             .modal-overlay .modal-content .form-group label {
-                font-size: 11px !important;
+                font-size: 12px !important;
             }
             .modal-overlay .modal-content .form-group input,
             .modal-overlay .modal-content .form-group select,
             .modal-overlay .modal-content .form-group textarea {
-                font-size: 12px !important;
-                padding: 6px 10px !important;
+                font-size: 14px !important;
+                padding: 8px 12px !important;
+                min-height: 44px !important;
             }
             .modal-overlay .modal-content .access-checkbox-group {
-                grid-template-columns: 1fr !important;
+                grid-template-columns: 1fr 1fr !important;
             }
             .modal-overlay .modal-content .access-checkbox-group label {
-                font-size: 11px !important;
+                font-size: 12px !important;
+                padding: 4px 0;
             }
             
-            /* Settings */
             .settings-grid {
                 grid-template-columns: 1fr !important;
                 gap: 8px !important;
@@ -363,7 +366,7 @@
                 padding: 12px !important;
             }
             .settings-card .card-header .title h4 {
-                font-size: 12px !important;
+                font-size: 13px !important;
             }
             .settings-card .form-row {
                 flex-direction: column !important;
@@ -371,11 +374,12 @@
             }
             .settings-card .form-row label {
                 min-width: auto !important;
-                font-size: 11px !important;
+                font-size: 12px !important;
             }
             .settings-card .form-row input {
-                font-size: 12px !important;
-                padding: 4px 8px !important;
+                font-size: 14px !important;
+                padding: 8px 10px !important;
+                min-height: 40px !important;
             }
             .settings-summary {
                 grid-template-columns: 1fr 1fr !important;
@@ -383,10 +387,9 @@
                 padding: 8px !important;
             }
             .settings-summary .item .value {
-                font-size: 13px !important;
+                font-size: 14px !important;
             }
             
-            /* Profile */
             .profile-stats {
                 grid-template-columns: 1fr 1fr !important;
                 gap: 6px !important;
@@ -395,159 +398,199 @@
                 padding: 8px 10px !important;
             }
             .profile-stats .stat .stat-value {
-                font-size: 16px !important;
+                font-size: 18px !important;
             }
             .profile-field {
                 flex-direction: column !important;
                 align-items: flex-start !important;
                 gap: 2px !important;
-                padding: 4px 0 !important;
+                padding: 6px 0 !important;
             }
             .profile-field .field-label {
                 width: auto !important;
-                font-size: 11px !important;
-            }
-            .profile-field .field-value {
                 font-size: 12px !important;
             }
+            .profile-field .field-value {
+                font-size: 13px !important;
+            }
             
-            /* History tabs */
             .history-tabs .tab-btn {
-                font-size: 10px !important;
-                padding: 4px 8px !important;
+                font-size: 11px !important;
+                padding: 6px 10px !important;
             }
             .history-toolbar {
                 flex-direction: column !important;
                 align-items: stretch !important;
                 padding: 8px !important;
+                gap: 6px !important;
             }
             .history-toolbar .search-group {
                 flex-direction: column !important;
+                gap: 4px !important;
             }
             .history-toolbar .search-group input,
             .history-toolbar .search-group select {
                 width: 100% !important;
-                font-size: 11px !important;
-                padding: 4px 8px !important;
+                font-size: 14px !important;
+                padding: 8px 10px !important;
+                min-height: 40px !important;
             }
             .history-toolbar .btn-group {
                 flex-wrap: wrap !important;
+                gap: 4px !important;
             }
             .history-toolbar .btn-group .btn {
                 flex: 1 !important;
                 min-width: 50px !important;
-                font-size: 9px !important;
-                padding: 3px 6px !important;
+                font-size: 10px !important;
+                padding: 6px 10px !important;
             }
             
             .history-chart-container {
-                padding: 8px !important;
+                padding: 10px !important;
             }
             .history-chart-container .chart-header h4 {
-                font-size: 11px !important;
-            }
-            .history-chart-container .chart-legend {
-                font-size: 8px !important;
-                gap: 6px !important;
-            }
-            
-            /* Map full */
-            .map-full-container .map-full-wrapper {
-                height: 200px !important;
-            }
-            
-            /* Login */
-            .login-container {
-                padding: 20px 14px !important;
-            }
-            .login-container .logo-area .logo-wrapper {
-                flex-direction: column !important;
-                gap: 6px !important;
-            }
-            .login-container .logo-area h1 {
-                font-size: 22px !important;
-            }
-            .login-container .logo-area p {
                 font-size: 12px !important;
             }
             
-            /* Buttons */
-            .btn {
-                font-size: 10px !important;
-                padding: 4px 10px !important;
-            }
-            .btn-sm {
-                font-size: 9px !important;
-                padding: 2px 6px !important;
-            }
-            .btn-xs {
-                font-size: 8px !important;
-                padding: 1px 4px !important;
+            .map-full-container .map-full-wrapper {
+                height: 250px !important;
             }
             
-            /* Sidebar on mobile */
+            .login-container {
+                padding: 24px 16px !important;
+                margin: 10px !important;
+            }
+            .login-container .logo-area .logo-wrapper {
+                flex-direction: column !important;
+                gap: 8px !important;
+            }
+            .login-container .logo-area h1 {
+                font-size: 24px !important;
+            }
+            .login-container .logo-area p {
+                font-size: 13px !important;
+            }
+            .login-container input {
+                font-size: 16px !important;
+                padding: 12px 14px !important;
+                min-height: 48px !important;
+            }
+            .login-btn {
+                font-size: 16px !important;
+                padding: 14px !important;
+                min-height: 48px !important;
+            }
+            
+            .btn {
+                font-size: 11px !important;
+                padding: 6px 12px !important;
+                min-height: 36px !important;
+                min-width: 36px !important;
+            }
+            .btn-sm {
+                font-size: 10px !important;
+                padding: 4px 8px !important;
+                min-height: 32px !important;
+            }
+            .btn-xs {
+                font-size: 9px !important;
+                padding: 3px 6px !important;
+                min-height: 28px !important;
+            }
+            
             .sidebar-brand {
                 justify-content: center !important;
-                padding: 0 0 10px 0 !important;
+                padding: 12px 16px !important;
             }
             .sidebar-brand .brand-text h2 {
-                font-size: 14px !important;
+                font-size: 16px !important;
             }
             .sidebar-user {
-                padding: 6px !important;
-                margin: 4px 8px !important;
-                justify-content: center !important;
-                border-radius: 50% !important;
-                width: 36px !important;
-                height: 36px !important;
+                padding: 8px 12px !important;
+                margin: 6px 12px !important;
             }
             .sidebar-user .avatar {
-                width: 28px !important;
-                height: 28px !important;
-                font-size: 11px !important;
+                width: 32px !important;
+                height: 32px !important;
+                font-size: 13px !important;
             }
-            .sidebar-user .user-info {
-                display: none !important;
+            .sidebar-user .user-info .name {
+                font-size: 13px !important;
             }
-            .sidebar-user .status-dot {
-                display: none !important;
+            .sidebar-user .user-info .role {
+                font-size: 10px !important;
             }
             .menu-item {
-                justify-content: center !important;
-                padding: 8px 0 !important;
-                margin: 0 4px !important;
-                width: 36px !important;
-                height: 36px !important;
-                border-radius: 50% !important;
-            }
-            .menu-item span {
-                display: none !important;
+                padding: 10px 16px !important;
+                margin: 2px 8px !important;
+                font-size: 13px !important;
+                min-height: 40px !important;
             }
             .menu-item i {
                 font-size: 16px !important;
-                width: auto !important;
+                width: 22px !important;
             }
             .menu-label {
-                display: none !important;
-            }
-            .sidebar-footer {
-                display: none !important;
-            }
-            .menu-item.logout {
-                margin-top: auto !important;
+                font-size: 10px !important;
+                padding: 0 16px !important;
             }
             
-            /* Thingspeak status */
             .thingspeak-status {
-                font-size: 9px !important;
-                padding: 2px 8px !important;
+                font-size: 10px !important;
+                padding: 2px 10px !important;
+            }
+            
+            /* Modal actions mobile */
+            .modal-overlay .modal-content .modal-actions {
+                flex-direction: column !important;
+            }
+            .modal-overlay .modal-content .modal-actions .btn {
+                width: 100% !important;
+                justify-content: center !important;
+                min-height: 44px !important;
             }
         }
 
-        /* ============================================================
-           RESPONSIF HP KECIL
-           ============================================================ */
         @media (max-width:480px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr !important;
+            }
+            .foto-grid {
+                grid-template-columns: 1fr 1fr !important;
+            }
+            .settings-summary {
+                grid-template-columns: 1fr 1fr !important;
+            }
+            .profile-stats {
+                grid-template-columns: 1fr 1fr !important;
+            }
+            .stat-card .value {
+                font-size: 16px !important;
+            }
+            .page-header h1 {
+                font-size: 16px !important;
+            }
+            table {
+                font-size: 9px !important;
+                min-width: 550px !important;
+            }
+            table th, table td {
+                padding: 4px 6px !important;
+                font-size: 9px !important;
+            }
+            .history-tabs .tab-btn {
+                font-size: 10px !important;
+                padding: 4px 6px !important;
+            }
+            .history-toolbar .btn-group .btn {
+                font-size: 9px !important;
+                padding: 4px 6px !important;
+                min-height: 28px !important;
+            }
+        }
+
+        @media (max-width:360px) {
             .dashboard-grid {
                 grid-template-columns: 1fr !important;
             }
@@ -560,44 +603,8 @@
             .profile-stats {
                 grid-template-columns: 1fr !important;
             }
-            .modal-overlay .modal-content {
-                padding: 10px !important;
-            }
-            .stat-card .value {
-                font-size: 14px !important;
-            }
-            .page-header h1 {
-                font-size: 14px !important;
-            }
-            .login-container {
-                padding: 16px 12px !important;
-            }
-            .history-tabs .tab-btn {
-                font-size: 9px !important;
-                padding: 3px 6px !important;
-            }
-            .history-toolbar .btn-group .btn {
-                font-size: 8px !important;
-                padding: 2px 4px !important;
-            }
-            table {
-                font-size: 8px !important;
-                min-width: 500px !important;
-            }
-            table th, table td {
-                padding: 2px 4px !important;
-                font-size: 8px !important;
-            }
-            .schedule-item .info .customer {
-                font-size: 9px !important;
-            }
-            .schedule-item .time {
-                font-size: 7px !important;
-                min-width: 25px !important;
-            }
-            .schedule-item .status {
-                font-size: 7px !important;
-                padding: 0 4px !important;
+            .modal-overlay .modal-content .access-checkbox-group {
+                grid-template-columns: 1fr !important;
             }
         }
 
@@ -685,6 +692,7 @@
             font-size: 14px;
             transition: var(--transition);
             -webkit-appearance: none;
+            background: white;
         }
         .login-container input:focus {
             outline: none;
@@ -704,8 +712,9 @@
             transition: var(--transition);
             margin-top: 8px;
             touch-action: manipulation;
+            min-height: 48px;
         }
-        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(13,71,161,0.3); }
+        .login-btn:active { transform: scale(0.97); }
         .login-error { color: var(--danger); font-size: 13px; text-align: center; margin-top: 12px; display: none; }
         .login-footer {
             text-align: center;
@@ -830,8 +839,10 @@
             width: calc(100% - 20px);
             text-align: left;
             touch-action: manipulation;
+            min-height: 44px;
         }
         .menu-item i { width: 20px; font-size: 15px; color: var(--gray-400); }
+        .menu-item:active { transform: scale(0.96); }
         .menu-item:hover { background: var(--primary-bg); color: var(--primary); }
         .menu-item:hover i { color: var(--primary); }
         .menu-item.active { background: var(--primary-bg); color: var(--primary); font-weight: 600; }
@@ -857,9 +868,10 @@
 
         .main-content {
             flex: 1;
-            padding: 24px 30px 30px 30px;
+            padding: 20px 24px 24px 24px;
             overflow-y: auto;
             background: var(--gray-50);
+            -webkit-overflow-scrolling: touch;
         }
 
         .page-header {
@@ -910,9 +922,13 @@
             transition: var(--transition);
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 4px;
             touch-action: manipulation;
+            min-height: 36px;
+            min-width: 36px;
         }
+        .btn:active { transform: scale(0.96); }
         .btn-primary { background: var(--primary-gradient); color: white; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(13,71,161,0.3); }
         .btn-secondary { background: var(--secondary); color: white; }
@@ -927,8 +943,8 @@
         .btn-purple:hover { background: #7c3aed; transform: translateY(-2px); }
         .btn-outline { background: transparent; border: 2px solid var(--gray-200); color: var(--gray-600); }
         .btn-outline:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-2px); }
-        .btn-sm { padding: 3px 10px; font-size: 10px; }
-        .btn-xs { padding: 2px 6px; font-size: 9px; border-radius: 4px; }
+        .btn-sm { padding: 4px 10px; font-size: 10px; min-height: 32px; }
+        .btn-xs { padding: 3px 6px; font-size: 9px; border-radius: 4px; min-height: 28px; }
 
         .dashboard-grid {
             display: grid;
@@ -957,7 +973,7 @@
             border-radius: 0 0 0 60px;
             opacity: 0.3;
         }
-        .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+        .stat-card:active { transform: scale(0.98); }
         .stat-card.blue { border-left-color: var(--secondary); }
         .stat-card.green { border-left-color: var(--success); }
         .stat-card.purple { border-left-color: var(--purple); }
@@ -1142,7 +1158,7 @@
             cursor: pointer;
             transition: var(--transition);
         }
-        .foto-item:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+        .foto-item:active { transform: scale(0.96); }
         .foto-item .foto-thumb {
             height: 80px;
             overflow: hidden;
@@ -1231,7 +1247,7 @@
         }
         table td { padding: 6px 10px; border-bottom: 1px solid var(--gray-100); color: var(--gray-700); vertical-align: middle; }
         table tr:hover td { background: var(--primary-bg); }
-        .table-scroll { overflow-y: auto; max-height: 300px; }
+        .table-scroll { overflow-y: auto; max-height: 300px; -webkit-overflow-scrolling: touch; }
 
         .status-badge {
             padding: 2px 10px;
@@ -1303,6 +1319,7 @@
             overflow-y: auto;
             box-shadow: var(--shadow-xl);
             animation: slideUp 0.3s ease;
+            -webkit-overflow-scrolling: touch;
         }
         .modal-overlay .modal-content .modal-header {
             display: flex;
@@ -1322,8 +1339,9 @@
             cursor: pointer;
             transition: var(--transition);
             touch-action: manipulation;
+            padding: 4px 8px;
         }
-        .modal-overlay .modal-content .modal-header .close-btn:hover { color: var(--gray-800); transform: rotate(90deg); }
+        .modal-overlay .modal-content .modal-header .close-btn:active { transform: rotate(90deg); }
         .modal-overlay .modal-content .form-group { margin-bottom: 12px; }
         .modal-overlay .modal-content .form-group label {
             display: block;
@@ -1344,6 +1362,7 @@
             font-family: inherit;
             transition: var(--transition);
             -webkit-appearance: none;
+            background: white;
         }
         .modal-overlay .modal-content .form-group input:focus,
         .modal-overlay .modal-content .form-group select:focus,
@@ -1361,8 +1380,9 @@
             text-align: center;
             cursor: pointer;
             transition: var(--transition);
+            touch-action: manipulation;
         }
-        .modal-overlay .modal-content .file-upload:hover {
+        .modal-overlay .modal-content .file-upload:active {
             border-color: var(--primary);
             background: var(--primary-bg);
         }
@@ -1474,7 +1494,7 @@
             border-top: 4px solid var(--primary);
             transition: var(--transition);
         }
-        .settings-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+        .settings-card:active { transform: scale(0.99); }
         .settings-card .card-header {
             display: flex;
             align-items: center;
@@ -1511,6 +1531,7 @@
             transition: var(--transition);
             min-width: 60px;
             -webkit-appearance: none;
+            background: white;
         }
         .settings-card .form-row input:focus {
             border-color: var(--primary);
@@ -1539,12 +1560,12 @@
             gap: 8px;
         }
         .interval-selector .btn-interval {
-            width: 30px;
-            height: 30px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             border: 2px solid var(--gray-200);
             background: var(--white);
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
             cursor: pointer;
             transition: var(--transition);
@@ -1554,13 +1575,14 @@
             color: var(--gray-700);
             touch-action: manipulation;
         }
-        .interval-selector .btn-interval:hover {
+        .interval-selector .btn-interval:active {
             border-color: var(--primary);
             background: var(--primary-bg);
             color: var(--primary);
+            transform: scale(0.92);
         }
         .interval-selector .interval-value {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--gray-800);
             min-width: 40px;
@@ -1657,8 +1679,8 @@
             cursor: pointer;
         }
         .modal-overlay .access-checkbox-group input[type="checkbox"] {
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             accent-color: var(--primary);
             cursor: pointer;
         }
@@ -1735,8 +1757,9 @@
             background: transparent;
             color: var(--gray-500);
             touch-action: manipulation;
+            min-height: 40px;
         }
-        .history-tabs .tab-btn:hover { background: var(--gray-100); }
+        .history-tabs .tab-btn:active { transform: scale(0.96); }
         .history-tabs .tab-btn.active {
             background: var(--primary-gradient);
             color: white;
@@ -1806,17 +1829,14 @@
         .w-full { width: 100%; }
         .gap-8 { gap: 8px; }
 
-        .status-progress { background: var(--warning-bg); color: #d97706; }
-        .status-done { background: var(--success-bg); color: #065f46; }
-        .status-cancel { background: var(--danger-bg); color: #dc2626; }
-        .status-reschedule { background: var(--secondary-bg); color: #2563eb; }
-
-        @media (max-width:1024px) {
+        /* Tablet */
+        @media (min-width:769px) and (max-width:1024px) {
             .dashboard-grid { grid-template-columns: repeat(2,1fr); }
             .dashboard-bottom { grid-template-columns: 1fr; }
-            .settings-grid { grid-template-columns: 1fr; }
+            .settings-grid { grid-template-columns: 1fr 1fr; }
             .profile-stats { grid-template-columns: repeat(2,1fr); }
             .foto-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+            .main-content { padding: 16px 20px !important; }
         }
     </style>
 </head>
@@ -3434,10 +3454,15 @@
                 }
             }
             const ctx = canvas.getContext('2d');
-            const w = canvas.parentElement.clientWidth - 40;
+            const rect = canvas.parentElement.getBoundingClientRect();
+            const w = Math.min(rect.width - 40, 800);
             const h = 180;
-            canvas.width = w;
-            canvas.height = h;
+            canvas.width = w * (window.devicePixelRatio || 1);
+            canvas.height = h * (window.devicePixelRatio || 1);
+            canvas.style.width = w + 'px';
+            canvas.style.height = h + 'px';
+            ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+            
             const pad = { top: 15, bottom: 35, left: 40, right: 15 };
             const cw = w - pad.left - pad.right;
             const ch = h - pad.top - pad.bottom;
@@ -3548,7 +3573,11 @@
             ctx.shadowColor = 'rgba(0,0,0,0.05)';
             ctx.shadowBlur = 6;
             ctx.beginPath();
-            ctx.roundRect(lx, ly - 30, w - 20, 28, 4);
+            if (ctx.roundRect) {
+                ctx.roundRect(lx, ly - 30, w - 20, 28, 4);
+            } else {
+                ctx.rect(lx, ly - 30, w - 20, 28);
+            }
             ctx.fill();
             ctx.shadowBlur = 0;
             let lxPos = lx + 8, lyPos = ly - 27;
@@ -3568,19 +3597,6 @@
                 ctx.fillText(l.label, lxPos + 10, lyPos + 5);
                 lxPos += l.label === 'Max' ? 35 : 30;
             });
-        }
-
-        if (!CanvasRenderingContext2D.prototype.roundRect) {
-            CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
-                if (r > w / 2) r = w / 2;
-                if (r > h / 2) r = h / 2;
-                this.moveTo(x + r, y);
-                this.arcTo(x + w, y, x + w, y + h, r);
-                this.arcTo(x + w, y + h, x, y + h, r);
-                this.arcTo(x, y + h, y, y + h, r);
-                this.arcTo(x, y, x + w, y, r);
-                return this;
-            };
         }
 
         // ============================================================
@@ -4142,10 +4158,15 @@
             if (data.length === 0) return;
             const ctx = canvas.getContext('2d');
             const container = canvas.parentElement;
-            const w = container.clientWidth - 40;
+            const rect = container.getBoundingClientRect();
+            const w = Math.min(rect.width - 40, 900);
             const h = 200;
-            canvas.width = w;
-            canvas.height = h;
+            canvas.width = w * (window.devicePixelRatio || 1);
+            canvas.height = h * (window.devicePixelRatio || 1);
+            canvas.style.width = w + 'px';
+            canvas.style.height = h + 'px';
+            ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+            
             const pad = { top: 20, bottom: 30, left: 40, right: 15 };
             const cw = w - pad.left - pad.right;
             const ch = h - pad.top - pad.bottom;
@@ -4561,7 +4582,7 @@
         }
 
         // ============================================================
-        // RENDER SCHEDULE - HILANGKAN EXPORT CSV & EXCEL
+        // RENDER SCHEDULE
         // ============================================================
         function renderSchedule() {
             const m = document.getElementById('mainContent');
@@ -4839,7 +4860,7 @@
         }
 
         // ============================================================
-        // LOGIN / LOGOUT - TANPA KONFIRMASI
+        // LOGIN / LOGOUT
         // ============================================================
         async function handleLogin(e) {
             e.preventDefault();
@@ -4896,10 +4917,16 @@
                 item.addEventListener('click', function() { navigateTo(this.dataset.page); });
             });
             document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+            
+            let resizeTimer;
             window.addEventListener('resize', function() {
-                if (document.getElementById('trendChart')) renderChart();
-                if (document.getElementById('sensorTrendChart')) renderSensorTrendChart();
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    if (document.getElementById('trendChart')) renderChart();
+                    if (document.getElementById('sensorTrendChart')) renderSensorTrendChart();
+                }, 200);
             });
+            
             updateLogoDisplay();
             console.log('🚀 MHB-832SD Dashboard v26.0');
             console.log('📋 © 2026 R&D Interskala - rnd@interskala.com');
