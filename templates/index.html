@@ -96,6 +96,9 @@
         }
         .full-page-mode .sidebar-toggle { display: none !important; }
 
+        /* ============================================================
+           RESPONSIF HP - DIPERBAIKI
+           ============================================================ */
         @media (max-width:768px) {
             .sidebar-toggle { display: block; }
             .sidebar {
@@ -106,16 +109,501 @@
                 z-index: 999;
                 width: 280px;
                 box-shadow: var(--shadow-lg);
+                height: 100vh;
+                overflow-y: auto;
             }
             .sidebar.open { transform: translateX(0); }
             .sidebar-overlay.active { display: block; }
-            .main-content { padding-top: 60px; }
-        }
-        @media (min-width:769px) {
-            .sidebar-toggle { display: none !important; }
-            .sidebar-overlay { display: none !important; }
+            
+            .main-content {
+                padding: 8px !important;
+                padding-top: 55px !important;
+                overflow-x: hidden !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 6px !important;
+                margin-bottom: 8px !important;
+            }
+            .page-header h1 {
+                font-size: 16px !important;
+            }
+            .page-header h1 small {
+                font-size: 11px !important;
+                display: block !important;
+                margin-left: 0 !important;
+            }
+            .header-right {
+                width: 100% !important;
+                flex-wrap: wrap !important;
+                gap: 4px !important;
+            }
+            .header-time, .user-login-info {
+                font-size: 9px !important;
+                padding: 3px 8px !important;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 6px !important;
+            }
+            .stat-card {
+                padding: 8px 10px !important;
+                border-left-width: 3px !important;
+            }
+            .stat-card::after {
+                width: 30px;
+                height: 30px;
+            }
+            .stat-card .value {
+                font-size: 16px !important;
+            }
+            .stat-card .label {
+                font-size: 8px !important;
+            }
+            .stat-card .sub {
+                font-size: 8px !important;
+            }
+            
+            .dashboard-bottom {
+                grid-template-columns: 1fr !important;
+                gap: 8px !important;
+            }
+            .chart-container {
+                padding: 10px !important;
+            }
+            .chart-container canvas {
+                max-height: 120px !important;
+            }
+            
+            .info-side {
+                gap: 8px !important;
+            }
+            .schedule-card {
+                max-height: 180px !important;
+                padding: 10px !important;
+            }
+            .schedule-card h3 {
+                font-size: 11px !important;
+            }
+            .schedule-item {
+                padding: 4px 8px !important;
+                gap: 6px !important;
+            }
+            .schedule-item .time {
+                font-size: 8px !important;
+                min-width: 30px !important;
+            }
+            .schedule-item .info .customer {
+                font-size: 10px !important;
+            }
+            .schedule-item .info .teknis {
+                font-size: 8px !important;
+            }
+            .schedule-item .status {
+                font-size: 8px !important;
+                padding: 1px 6px !important;
+            }
+            
+            .map-card {
+                padding: 10px !important;
+            }
+            .map-card .map-small {
+                height: 100px !important;
+            }
+            .map-card .map-info {
+                font-size: 8px !important;
+                padding: 4px 8px !important;
+                gap: 2px 8px !important;
+            }
+            
+            .company-profile-top {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                padding: 8px 12px !important;
+                gap: 4px !important;
+            }
+            .company-profile-top .company-logo,
+            .company-profile-top .company-logo-placeholder {
+                width: 32px !important;
+                height: 32px !important;
+                font-size: 12px !important;
+            }
+            .company-profile-top .company-name {
+                font-size: 12px !important;
+            }
+            .company-profile-top .company-detail {
+                font-size: 9px !important;
+                flex-direction: column !important;
+                gap: 2px !important;
+            }
+            
+            .status-batas {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                padding: 8px 12px !important;
+                gap: 4px !important;
+                margin-top: 8px !important;
+                margin-bottom: 8px !important;
+            }
+            .status-batas .batas-item {
+                font-size: 10px !important;
+                gap: 2px !important;
+            }
+            .status-batas .batas-item span[style*="font-size:10px"] {
+                font-size: 8px !important;
+            }
+            .status-batas .batas-status {
+                margin-left: 0 !important;
+                font-size: 11px !important;
+                padding: 2px 10px !important;
+            }
+            
+            .foto-section {
+                padding: 8px 10px !important;
+            }
+            .foto-section .foto-header {
+                font-size: 11px !important;
+            }
+            .foto-grid {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 4px !important;
+            }
+            .foto-item .foto-thumb {
+                height: 60px !important;
+            }
+            .foto-item .foto-info .foto-customer {
+                font-size: 10px !important;
+            }
+            .foto-item .foto-info .foto-teknis {
+                font-size: 8px !important;
+            }
+            .foto-empty i {
+                font-size: 20px !important;
+            }
+            .foto-empty p {
+                font-size: 10px !important;
+            }
+            
+            .save-status {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                padding: 6px 12px !important;
+                gap: 4px !important;
+            }
+            .save-status .left {
+                font-size: 9px !important;
+                gap: 4px !important;
+                flex-wrap: wrap !important;
+            }
+            .save-status .left i {
+                font-size: 12px !important;
+            }
+            .save-status .right {
+                font-size: 9px !important;
+            }
+            
+            /* Table responsive */
+            .table-container {
+                padding: 8px !important;
+                overflow-x: auto !important;
+            }
+            .table-container .table-header .table-title {
+                font-size: 12px !important;
+            }
+            table {
+                font-size: 10px !important;
+                min-width: 600px !important;
+            }
+            table th, table td {
+                padding: 4px 6px !important;
+                font-size: 9px !important;
+            }
+            .table-scroll {
+                max-height: 250px !important;
+                overflow-x: auto !important;
+            }
+            
+            /* Modal */
+            .modal-overlay .modal-content {
+                padding: 12px !important;
+                margin: 8px !important;
+                max-width: 100% !important;
+                max-height: 95vh !important;
+            }
+            .modal-overlay .modal-content .modal-header h3 {
+                font-size: 14px !important;
+            }
+            .modal-overlay .modal-content .form-group label {
+                font-size: 11px !important;
+            }
+            .modal-overlay .modal-content .form-group input,
+            .modal-overlay .modal-content .form-group select,
+            .modal-overlay .modal-content .form-group textarea {
+                font-size: 12px !important;
+                padding: 6px 10px !important;
+            }
+            .modal-overlay .modal-content .access-checkbox-group {
+                grid-template-columns: 1fr !important;
+            }
+            .modal-overlay .modal-content .access-checkbox-group label {
+                font-size: 11px !important;
+            }
+            
+            /* Settings */
+            .settings-grid {
+                grid-template-columns: 1fr !important;
+                gap: 8px !important;
+            }
+            .settings-card {
+                padding: 12px !important;
+            }
+            .settings-card .card-header .title h4 {
+                font-size: 12px !important;
+            }
+            .settings-card .form-row {
+                flex-direction: column !important;
+                align-items: stretch !important;
+            }
+            .settings-card .form-row label {
+                min-width: auto !important;
+                font-size: 11px !important;
+            }
+            .settings-card .form-row input {
+                font-size: 12px !important;
+                padding: 4px 8px !important;
+            }
+            .settings-summary {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 4px !important;
+                padding: 8px !important;
+            }
+            .settings-summary .item .value {
+                font-size: 13px !important;
+            }
+            
+            /* Profile */
+            .profile-stats {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 6px !important;
+            }
+            .profile-stats .stat {
+                padding: 8px 10px !important;
+            }
+            .profile-stats .stat .stat-value {
+                font-size: 16px !important;
+            }
+            .profile-field {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 2px !important;
+                padding: 4px 0 !important;
+            }
+            .profile-field .field-label {
+                width: auto !important;
+                font-size: 11px !important;
+            }
+            .profile-field .field-value {
+                font-size: 12px !important;
+            }
+            
+            /* History tabs */
+            .history-tabs .tab-btn {
+                font-size: 10px !important;
+                padding: 4px 8px !important;
+            }
+            .history-toolbar {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                padding: 8px !important;
+            }
+            .history-toolbar .search-group {
+                flex-direction: column !important;
+            }
+            .history-toolbar .search-group input,
+            .history-toolbar .search-group select {
+                width: 100% !important;
+                font-size: 11px !important;
+                padding: 4px 8px !important;
+            }
+            .history-toolbar .btn-group {
+                flex-wrap: wrap !important;
+            }
+            .history-toolbar .btn-group .btn {
+                flex: 1 !important;
+                min-width: 50px !important;
+                font-size: 9px !important;
+                padding: 3px 6px !important;
+            }
+            
+            .history-chart-container {
+                padding: 8px !important;
+            }
+            .history-chart-container .chart-header h4 {
+                font-size: 11px !important;
+            }
+            .history-chart-container .chart-legend {
+                font-size: 8px !important;
+                gap: 6px !important;
+            }
+            
+            /* Map full */
+            .map-full-container .map-full-wrapper {
+                height: 200px !important;
+            }
+            
+            /* Login */
+            .login-container {
+                padding: 20px 14px !important;
+            }
+            .login-container .logo-area .logo-wrapper {
+                flex-direction: column !important;
+                gap: 6px !important;
+            }
+            .login-container .logo-area h1 {
+                font-size: 22px !important;
+            }
+            .login-container .logo-area p {
+                font-size: 12px !important;
+            }
+            
+            /* Buttons */
+            .btn {
+                font-size: 10px !important;
+                padding: 4px 10px !important;
+            }
+            .btn-sm {
+                font-size: 9px !important;
+                padding: 2px 6px !important;
+            }
+            .btn-xs {
+                font-size: 8px !important;
+                padding: 1px 4px !important;
+            }
+            
+            /* Sidebar on mobile */
+            .sidebar-brand {
+                justify-content: center !important;
+                padding: 0 0 10px 0 !important;
+            }
+            .sidebar-brand .brand-text h2 {
+                font-size: 14px !important;
+            }
+            .sidebar-user {
+                padding: 6px !important;
+                margin: 4px 8px !important;
+                justify-content: center !important;
+                border-radius: 50% !important;
+                width: 36px !important;
+                height: 36px !important;
+            }
+            .sidebar-user .avatar {
+                width: 28px !important;
+                height: 28px !important;
+                font-size: 11px !important;
+            }
+            .sidebar-user .user-info {
+                display: none !important;
+            }
+            .sidebar-user .status-dot {
+                display: none !important;
+            }
+            .menu-item {
+                justify-content: center !important;
+                padding: 8px 0 !important;
+                margin: 0 4px !important;
+                width: 36px !important;
+                height: 36px !important;
+                border-radius: 50% !important;
+            }
+            .menu-item span {
+                display: none !important;
+            }
+            .menu-item i {
+                font-size: 16px !important;
+                width: auto !important;
+            }
+            .menu-label {
+                display: none !important;
+            }
+            .sidebar-footer {
+                display: none !important;
+            }
+            .menu-item.logout {
+                margin-top: auto !important;
+            }
+            
+            /* Thingspeak status */
+            .thingspeak-status {
+                font-size: 9px !important;
+                padding: 2px 8px !important;
+            }
         }
 
+        /* ============================================================
+           RESPONSIF HP KECIL
+           ============================================================ */
+        @media (max-width:480px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr !important;
+            }
+            .foto-grid {
+                grid-template-columns: 1fr !important;
+            }
+            .settings-summary {
+                grid-template-columns: 1fr !important;
+            }
+            .profile-stats {
+                grid-template-columns: 1fr !important;
+            }
+            .modal-overlay .modal-content {
+                padding: 10px !important;
+            }
+            .stat-card .value {
+                font-size: 14px !important;
+            }
+            .page-header h1 {
+                font-size: 14px !important;
+            }
+            .login-container {
+                padding: 16px 12px !important;
+            }
+            .history-tabs .tab-btn {
+                font-size: 9px !important;
+                padding: 3px 6px !important;
+            }
+            .history-toolbar .btn-group .btn {
+                font-size: 8px !important;
+                padding: 2px 4px !important;
+            }
+            table {
+                font-size: 8px !important;
+                min-width: 500px !important;
+            }
+            table th, table td {
+                padding: 2px 4px !important;
+                font-size: 8px !important;
+            }
+            .schedule-item .info .customer {
+                font-size: 9px !important;
+            }
+            .schedule-item .time {
+                font-size: 7px !important;
+                min-width: 25px !important;
+            }
+            .schedule-item .status {
+                font-size: 7px !important;
+                padding: 0 4px !important;
+            }
+        }
+
+        /* ============================================================
+           CSS LAINNYA (TIDAK DIUBAH)
+           ============================================================ */
         #loginPage {
             display: flex;
             align-items: center;
@@ -1172,6 +1660,7 @@
             width: 14px;
             height: 14px;
             accent-color: var(--primary);
+            cursor: pointer;
         }
 
         .history-chart-container {
@@ -1328,82 +1817,6 @@
             .settings-grid { grid-template-columns: 1fr; }
             .profile-stats { grid-template-columns: repeat(2,1fr); }
             .foto-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
-        }
-        @media (max-width:768px) {
-            .sidebar-brand h2, .sidebar-brand small, .menu-label, .sidebar-user .user-info, .sidebar-footer { display: none; }
-            .sidebar-brand { padding: 0 0 10px 0; text-align: center; justify-content: center; }
-            .sidebar-brand .brand-logo { display: none; }
-            .sidebar-brand .brand-logo-placeholder { display: none; }
-            .sidebar-user { padding: 6px; margin: 6px; justify-content: center; border-radius: 50%; width: 38px; height: 38px; margin: 6px auto; }
-            .sidebar-user .avatar { width: 28px; height: 28px; font-size: 11px; }
-            .sidebar-user .status-dot { display: none; }
-            .menu-item { justify-content: center; padding: 10px 0; margin: 0 3px; width: 38px; height: 38px; border-radius: 50%; margin: 2px auto; }
-            .menu-item i { font-size: 16px; width: auto; }
-            .main-content { padding: 10px; padding-top: 55px; }
-            .dashboard-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-            .stat-card { padding: 10px 12px; }
-            .stat-card .value { font-size: 18px; }
-            .page-header h1 { font-size: 16px; }
-            .page-header h1 small { font-size: 11px; display: block; margin-left: 0; }
-            .header-right { width: 100%; }
-            .header-time, .user-login-info { font-size: 10px; padding: 4px 10px; }
-            .save-status { flex-direction: column; align-items: flex-start; }
-            .settings-card .form-row { flex-direction: column; align-items: stretch; }
-            .settings-card .form-row label { min-width: auto; }
-            .modal-overlay .modal-content { padding: 16px; margin: 10px; }
-            .modal-overlay .modal-content .access-checkbox-group { grid-template-columns: 1fr; }
-            .company-profile-top { flex-direction: column; align-items: flex-start; gap: 6px; }
-            .company-profile-top .company-detail { flex-direction: column; gap: 3px; }
-            .map-card .map-small { height: 120px; }
-            .map-full-container .map-full-wrapper { height: 250px; }
-            .settings-summary { grid-template-columns: 1fr; }
-            .profile-stats { grid-template-columns: 1fr; }
-            .profile-field { flex-direction: column; align-items: flex-start; }
-            .profile-field .field-label { width: auto; }
-            .foto-grid { grid-template-columns: 1fr 1fr; }
-            .foto-item .foto-thumb { height: 60px; }
-            .history-toolbar { flex-direction: column; align-items: stretch; }
-            .history-toolbar .search-group { flex-direction: column; }
-            .history-toolbar .search-group input { width: 100%; }
-            .history-toolbar .btn-group { flex-wrap: wrap; }
-            .history-toolbar .btn-group .btn { flex: 1; min-width: 60px; font-size: 10px; padding: 4px 8px; }
-            .modal-overlay .modal-content { max-width: 100%; }
-            .login-container .logo-area .logo-wrapper { flex-direction: column; gap: 6px; }
-            .login-container .logo-area h1 { font-size: 22px; }
-            .status-batas { flex-direction: column; align-items: stretch; }
-            .status-batas .batas-status { margin-left: 0; }
-            .chart-container canvas { max-height: 120px; }
-            .schedule-card { max-height: 180px; }
-            .foto-section .foto-header { font-size: 12px; }
-            .schedule-item .info .customer { font-size: 11px; }
-            .schedule-item .info .teknis { font-size: 9px; }
-            .schedule-item .time { font-size: 9px; min-width: 35px; }
-            .schedule-item .status { font-size: 9px; padding: 1px 8px; }
-            .history-tabs .tab-btn { font-size: 11px; padding: 6px 10px; }
-            .table-container { padding: 10px; }
-            table th, table td { padding: 4px 6px; font-size: 10px; }
-        }
-        @media (max-width:480px) {
-            .dashboard-grid { grid-template-columns: 1fr; }
-            .sidebar { width: 48px; }
-            .menu-item { width: 34px; height: 34px; }
-            .menu-item i { font-size: 14px; }
-            .main-content { padding: 8px; padding-top: 50px; }
-            .stat-card { padding: 8px 10px; }
-            .stat-card .value { font-size: 16px; }
-            .page-header h1 { font-size: 14px; }
-            .btn { padding: 4px 10px; font-size: 10px; }
-            .login-container { padding: 20px 14px; }
-            .foto-grid { grid-template-columns: 1fr; }
-            .history-toolbar .btn-group .btn { font-size: 9px; padding: 3px 6px; }
-            .modal-overlay .modal-content { padding: 12px; }
-            .status-batas { flex-direction: column; align-items: stretch; }
-            .status-batas .batas-status { margin-left: 0; }
-            .chart-container canvas { max-height: 100px; }
-            .schedule-card { max-height: 160px; }
-            .foto-item .foto-thumb { height: 50px; }
-            .foto-item .foto-info .foto-customer { font-size: 10px; }
-            .history-tabs .tab-btn { font-size: 10px; padding: 4px 8px; }
         }
     </style>
 </head>
