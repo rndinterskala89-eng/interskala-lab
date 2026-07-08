@@ -35,20 +35,31 @@ UPLOAD_FOLDER = Path('uploads')
 UPLOAD_FOLDER.mkdir(exist_ok=True)
 
 # ============================================================
-# THINGSPEAK CONFIG FILE (SATU DEFINISI)
+# INISIALISASI FLASK (HARUS SEBELUM ROUTE)
+# ============================================================
+
+app = Flask(__name__, 
+    static_folder='static',
+    template_folder='templates'
+)
+
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key')
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+
+# Enable CORS
+CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+# ============================================================
+# THINGSPEAK CONFIG - SERVER SIDE
 # ============================================================
 
 THINGSPEAK_CONFIG_FILE = 'thingspeak_config.json'
 
 def load_thingspeak_config():
-    """Load ThingSpeak config dari file JSON"""
     try:
         with open(THINGSPEAK_CONFIG_FILE, 'r') as f:
-            config = json.load(f)
-            print(f"📡 Loaded ThingSpeak config from file: {config.get('channelId', 'empty')}")
-            return config
+            return json.load(f)
     except FileNotFoundError:
-        print("📡 ThingSpeak config file not found, creating default")
         default_config = {
             "channelId": "",
             "readApiKey": "",
@@ -60,10 +71,51 @@ def load_thingspeak_config():
         return default_config
 
 def save_thingspeak_config(config):
-    """Save ThingSpeak config ke file JSON"""
     with open(THINGSPEAK_CONFIG_FILE, 'w') as f:
         json.dump(config, f, indent=2)
-    print(f"💾 ThingSpeak config saved to file: {config.get('channelId', 'empty')}")
+
+@app.route('/api/thingspeak/config', methods=['GET', 'POST'])
+def thingspeak_config_api():
+    global THINGSPEAK_CONFIG, THINGSPEAK_CHANNEL_ID, THINGSPEAK_API_KEY
+    
+    if request.method == 'POST':
+        try:
+            config = request.get_json()
+            if config is None:
+                return jsonify({"success": False, "message": "Data tidak valid"}), 400
+            
+            channel_id = config.get('channelId', '').strip()
+            api_key = config.get('readApiKey', '').strip()
+            
+            if not channel_id or not api_key:
+                return jsonify({"success": False, "message": "Channel ID dan API Key harus diisi"}), 400
+            
+            save_thingspeak_config(config)
+            THINGSPEAK_CONFIG = config
+            THINGSPEAK_CHANNEL_ID = channel_id
+            THINGSPEAK_API_KEY = api_key
+            
+            return jsonify({
+                "success": True,
+                "message": "Konfigurasi ThingSpeak berhasil disimpan permanen!",
+                "config": config
+            })
+        except Exception as e:
+            return jsonify({"success": False, "message": str(e)}), 500
+    else:
+        # GET request
+        try:
+            with open(THINGSPEAK_CONFIG_FILE, 'r') as f:
+                config = json.load(f)
+            return jsonify(config)
+        except:
+            return jsonify({
+                "channelId": "",
+                "readApiKey": "",
+                "fieldSuhu": "field1",
+                "fieldKelembaban": "field2",
+                "fieldTekanan": "field3"
+            })
 
 # ============================================================
 # LOAD KONFIGURASI DARI ENVIRONMENT / CONFIG.PY
@@ -107,21 +159,6 @@ if thingspeak_config.get('channelId') and thingspeak_config.get('readApiKey'):
     THINGSPEAK_CHANNEL_ID = thingspeak_config.get('channelId')
     THINGSPEAK_API_KEY = thingspeak_config.get('readApiKey')
     print(f"📡 ThingSpeak configured: Channel {THINGSPEAK_CHANNEL_ID}")
-
-# ============================================================
-# INISIALISASI FLASK
-# ============================================================
-
-app = Flask(__name__, 
-    static_folder='static',
-    template_folder='templates'
-)
-
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key')
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
-
-# Enable CORS
-CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # ============================================================
 # DATA STORE (In-memory database)
@@ -1028,6 +1065,7 @@ if __name__ == '__main__':
     Path("templates").mkdir(exist_ok=True)
     Path("static").mkdir(exist_ok=True)
     Path("uploads").mkdir(exist_ok=True)
+    Path("logs").mkdir(exist_ok=True)
     
     # ============================================================
     # KONFIGURASI PORT UNTUK PRODUCTION
