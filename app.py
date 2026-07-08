@@ -35,6 +35,37 @@ UPLOAD_FOLDER = Path('uploads')
 UPLOAD_FOLDER.mkdir(exist_ok=True)
 
 # ============================================================
+# THINGSPEAK CONFIG FILE (SATU DEFINISI)
+# ============================================================
+
+THINGSPEAK_CONFIG_FILE = 'thingspeak_config.json'
+
+def load_thingspeak_config():
+    """Load ThingSpeak config dari file JSON"""
+    try:
+        with open(THINGSPEAK_CONFIG_FILE, 'r') as f:
+            config = json.load(f)
+            print(f"📡 Loaded ThingSpeak config from file: {config.get('channelId', 'empty')}")
+            return config
+    except FileNotFoundError:
+        print("📡 ThingSpeak config file not found, creating default")
+        default_config = {
+            "channelId": "",
+            "readApiKey": "",
+            "fieldSuhu": "field1",
+            "fieldKelembaban": "field2",
+            "fieldTekanan": "field3"
+        }
+        save_thingspeak_config(default_config)
+        return default_config
+
+def save_thingspeak_config(config):
+    """Save ThingSpeak config ke file JSON"""
+    with open(THINGSPEAK_CONFIG_FILE, 'w') as f:
+        json.dump(config, f, indent=2)
+    print(f"💾 ThingSpeak config saved to file: {config.get('channelId', 'empty')}")
+
+# ============================================================
 # LOAD KONFIGURASI DARI ENVIRONMENT / CONFIG.PY
 # ============================================================
 
@@ -68,44 +99,13 @@ except ImportError:
     DEFAULT_USERNAME = os.environ.get('DEFAULT_USERNAME', 'admin')
     DEFAULT_PASSWORD = os.environ.get('DEFAULT_PASSWORD', 'admin123')
 
-# ============================================================
-# THINGSPEAK CONFIG PERMANEN (Server-side)
-# ============================================================
-
-THINGSPEAK_CONFIG_FILE = 'thingspeak_config.json'
-
-def load_thingspeak_config():
-    """Load ThingSpeak config dari file JSON"""
-    try:
-        with open(THINGSPEAK_CONFIG_FILE, 'r') as f:
-            config = json.load(f)
-            print(f"📡 Loaded ThingSpeak config from file: {config.get('channelId', 'empty')}")
-            return config
-    except FileNotFoundError:
-        print("📡 ThingSpeak config file not found, creating default")
-        default_config = {
-            "channelId": "",
-            "readApiKey": "",
-            "fieldSuhu": "field1",
-            "fieldKelembaban": "field2",
-            "fieldTekanan": "field3"
-        }
-        save_thingspeak_config(default_config)
-        return default_config
-
-def save_thingspeak_config(config):
-    """Save ThingSpeak config ke file JSON"""
-    with open(THINGSPEAK_CONFIG_FILE, 'w') as f:
-        json.dump(config, f, indent=2)
-    print(f"💾 ThingSpeak config saved to file: {config.get('channelId', 'empty')}")
-
-# Load config dari file
-THINGSPEAK_CONFIG = load_thingspeak_config()
+# Load config dari file (override)
+thingspeak_config = load_thingspeak_config()
 
 # Update API_KEY dan CHANNEL_ID dari config jika ada
-if THINGSPEAK_CONFIG.get('channelId') and THINGSPEAK_CONFIG.get('readApiKey'):
-    THINGSPEAK_CHANNEL_ID = THINGSPEAK_CONFIG.get('channelId')
-    THINGSPEAK_API_KEY = THINGSPEAK_CONFIG.get('readApiKey')
+if thingspeak_config.get('channelId') and thingspeak_config.get('readApiKey'):
+    THINGSPEAK_CHANNEL_ID = thingspeak_config.get('channelId')
+    THINGSPEAK_API_KEY = thingspeak_config.get('readApiKey')
     print(f"📡 ThingSpeak configured: Channel {THINGSPEAK_CHANNEL_ID}")
 
 # ============================================================
@@ -990,62 +990,6 @@ def api_status():
 def ping():
     """Simple ping endpoint"""
     return jsonify({"pong": True, "timestamp": datetime.now().isoformat()})
-
-# ============================================================
-# THINGSPEAK CONFIG - SERVER SIDE
-# ============================================================
-
-THINGSPEAK_CONFIG_FILE = 'thingspeak_config.json'
-
-def load_thingspeak_config():
-    try:
-        with open(THINGSPEAK_CONFIG_FILE, 'r') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        default_config = {
-            "channelId": "",
-            "readApiKey": "",
-            "fieldSuhu": "field1",
-            "fieldKelembaban": "field2",
-            "fieldTekanan": "field3"
-        }
-        save_thingspeak_config(default_config)
-        return default_config
-
-def save_thingspeak_config(config):
-    with open(THINGSPEAK_CONFIG_FILE, 'w') as f:
-        json.dump(config, f, indent=2)
-
-@app.route('/api/thingspeak/config', methods=['GET', 'POST'])
-def thingspeak_config_api():
-    global THINGSPEAK_CONFIG, THINGSPEAK_CHANNEL_ID, THINGSPEAK_API_KEY
-    
-    if request.method == 'POST':
-        try:
-            config = request.get_json()
-            if config is None:
-                return jsonify({"success": False, "message": "Data tidak valid"}), 400
-            
-            channel_id = config.get('channelId', '').strip()
-            api_key = config.get('readApiKey', '').strip()
-            
-            if not channel_id or not api_key:
-                return jsonify({"success": False, "message": "Channel ID dan API Key harus diisi"}), 400
-            
-            save_thingspeak_config(config)
-            THINGSPEAK_CONFIG = config
-            THINGSPEAK_CHANNEL_ID = channel_id
-            THINGSPEAK_API_KEY = api_key
-            
-            return jsonify({
-                "success": True,
-                "message": "Konfigurasi ThingSpeak berhasil disimpan permanen!",
-                "config": config
-            })
-        except Exception as e:
-            return jsonify({"success": False, "message": str(e)}), 500
-    else:
-        return jsonify(THINGSPEAK_CONFIG)
 
 # ============================================================
 # RUN APPLICATION
